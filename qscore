@@ -1,0 +1,15 @@
+#!/bin/bash
+
+
+FILE=/tmp/qswitch-$$
+PORT=/tmp/qsport-$$
+if [ -z "$QS_QPORT" ] 
+then 
+	QS_QPORT=8080
+fi
+
+read QS_CHANNEL_NUMBER
+echo "curl -X GET http://localhost:$QS_QPORT/channel/1/$QS_CHANNEL_NUMBER 2>/dev/null | jq -r '.result'" > $FILE
+sh $FILE
+rm -f $FILE
+exit 

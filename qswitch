@@ -1,0 +1,139 @@
+#!/bin/bash
+
+
+# Variable Description
+INCORRECT_INPUT_COUNTER=0
+GETTEXT="gettext -d calc_ui"
+which gdialog 2> /dev/null && DIALOG=gdialog || DIALOG=dialog
+BUFFER=/tmp/qswitch1-$$
+OUTPUT_BUFFER=/tmp/qswitch2-$$
+CORE="./qscore"
+ERROR=/tmp/qserror-$$
+PORT=/tmp/qsport-$$
+
+main_loop (){
+	read INPUT_METHOD
+	if [ "$INPUT_METHOD" = 'k' ] 
+	then
+		echo "You will use TUI"
+	elif [ "$INPUT_METHOD" = 'm' ] 
+	then
+		echo "You will use GUI"
+	elif [ "$INPUT_METHOD" = 'something' ]
+	then
+		exit 
+	else
+		INCORRECT_INPUT_COUNTER=$((INCORRECT_INPUT_COUNTER+1)) 
+		echo "\n Please Enter k or m. ($INCORRECT_INPUT_COUNTER/3)" 
+		if [ $INCORRECT_INPUT_COUNTER -ge 3 ]
+		then
+			exit 
+		fi
+	fi
+}
+
+setup_network(){
+if [ "$QS_NETWORK_EN" = true ]
+then
+ 	CORE="nc $QS_HOST $QS_PORT"
+fi
+}
+
+end(){
+	rm -f $ERROR $OUTPUT_BUFFER $BUFFER
+	exit
+}
+	# echo "Enter something for exit.\nWhich one do you like more? Keyboard(k) or Mouse(m)?"
+	# while true;
+	# do
+	# 	main_loop
+	# done 
+TUI(){
+	setup_network
+	echo "You want to switch this SDN. Tell me the channel number (1 or 2)"
+	read QS_CHANNEL_NUMBER
+	echo $QS_CHANNEL_NUMBER | $CORE  
+}
+
+GUI(){
+	setup_network
+	while true
+	do
+		$DIALOG --inputbox "`$GETTEXT \"You want to switch this SDN. Tell me the channel number (1 or 2) :\"`" 8 35  2> $BUFFER || end
+		if cat $BUFFER | $CORE > $OUTPUT_BUFFER 2>$ERROR
+		then
+			MSG="`cat $OUTPUT_BUFFER`\\n\\n`$GETTEXT \"Continue?\"`"
+			$DIALOG --yesno "$MSG" 7 20 || end
+		else
+			MSG="`$GETTEXT \"Error:\"`\\n\\n`cat $ERROR`\\n\\n`$GETTEXT \"Continue?\"`"
+			$DIALOG --yesno "$MSG" 10 35 || end
+		fi
+	done
+}
+
+
+
+help(){
+	echo "this is help.\nOptions:"
+	echo "  -h|--help: showing help"
+	echo "  -n|--network: If this option is entered, the worker process would be over net and you must enter ip and port of the worker. otherwise it is local."
+	echo "  -P|--Port: port number of worker (xinetd)"
+	echo "  -H|--Host: host address of worker (xinetd)"
+	echo "  -p|--qport: This option indicate port number of the rest-forward app. Usually, It is 8080."
+	echo "  -I|--Input method: enter G for GUI, and T for TUI. IMPORTANT: THIS OPTION SHOULD BE THE LAST ONE SINCE THERE IS NO THREAD."
+
+}
+
+if  [[ "$#" -lt 2 ]]
+then
+	echo "You should enter an option. use -h for help"
+fi 
+
+while [[ "$#" -gt 0 ]]
+do
+key="$1"
+
+case $key in
+	-h|--help)
+	help
+	shift # past argument 
+	;;
+	-P|--port)
+	QS_PORT="$2"
+	shift # past argument
+	shift # past value
+	;;
+	-I|--input)
+	QS_INPUT_TYPE="$2"
+	if [ "$QS_INPUT_TYPE" = "T" ]
+	then
+		TUI
+	elif [ "$QS_INPUT_TYPE" = "G" ]
+	then
+		GUI
+	fi
+	shift # past argument
+	shift # past value
+	;;
+	-H|--host)
+	QS_HOST="$2"
+	shift # past argument
+	shift
+	;;
+	-n|--network)
+	QS_NETWORK_EN=true
+	shift # past argument
+	;;
+	-p|--qport)
+	export QS_QPORT="$2" # SHould be exported because core is in another file
+	shift # past argument
+	shift
+	;;
+	*)    # unknown option
+	shift # past argument
+	;;
+esac
+done
+
+
+
