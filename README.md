@@ -1,10 +1,13 @@
-calc_examples
+#calc_examples
 =============
 
-Rquirements:
-jq     : for parsing json arrays
-curl   : for contacting server
-dialog : for showing dialog in terminal environment
+##Rquirements:
+* __jq__     : for parsing json arrays
+* __curl__   : for contacting server
+* __dialog__ : for showing dialog in terminal environment
 
-Setup:
+##Setup:
 Install Python 2.7 or more
+Instal BAL
+Change setting in the rest-forward.py
+
