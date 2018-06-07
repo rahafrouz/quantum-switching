@@ -10,7 +10,10 @@
 Install Python 2.7 or more
 Instal BAL
 Change setting in the rest-forward.py accordingly
+
+
 `cd quantum-switching`
+
 `make install`
 
 ## Arguments
