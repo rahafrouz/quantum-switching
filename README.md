@@ -1,5 +1,5 @@
-calc_examples
-=============
+Quantum Switch Shell Application
+================================
 
 ## Rquirements:
 * __jq__     : for parsing json arrays
