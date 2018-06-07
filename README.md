@@ -1,4 +1,4 @@
-#calc_examples
+calc_examples
 =============
 
 ## Rquirements:
@@ -34,5 +34,7 @@ Change setting in the rest-forward.py accordingly
 
 ## Example
 Here is the example command to run. It is assumed that the `rest-forward` program is listening on port `8080` and the internal port for communication with the network core is `9090`. (If you do not know what is the -P option, just enter the 9090 as default vale.)
+
+
 `LANG=fa_IR.UTF-8 qswitch -n -P 9090 -H localhost -p 8080`
 
