@@ -7,7 +7,7 @@ GETTEXT="gettext -d qswitch"
 which gdialog 2> /dev/null && DIALOG=gdialog || DIALOG=dialog
 BUFFER=/tmp/qswitch1-$$
 OUTPUT_BUFFER=/tmp/qswitch2-$$
-CORE="./qscore"
+CORE="/usr/local/bin/qscore"
 ERROR=/tmp/qserror-$$
 PORT=/tmp/qsport-$$
 
@@ -58,10 +58,12 @@ GUI(){
 	setup_network
 	while true
 	do
-		$DIALOG --inputbox "`$GETTEXT \"You want to switch this SDN. Tell me the channel number (1 or 2) :\"`" 8 35  2> $BUFFER || end
+		$DIALOG --menu "`$GETTEXT \"You want to switch this SDN. Tell me the channel number (1 or 2) :\"`" 1 2 3 1 "`$GETTEXT \"Channel 1\"`" 2 "`$GETTEXT \"Channel 2\"`"  2> $BUFFER || end
 		if cat $BUFFER | $CORE > $OUTPUT_BUFFER 2>$ERROR
 		then
-			MSG="`cat $OUTPUT_BUFFER`\\n\\n`$GETTEXT \"Continue?\"`"
+			SOMEBFR=$(cat $OUTPUT_BUFFER)
+			SOMEBFR2="`$GETTEXT \"$SOMEBFR\"`"
+			MSG="$SOMEBFR2\\n\\n`$GETTEXT \"Continue?\"`"
 			$DIALOG --yesno "$MSG" 7 20 || end
 		else
 			MSG="`$GETTEXT \"Error:\"`\\n\\n`cat $ERROR`\\n\\n`$GETTEXT \"Continue?\"`"
@@ -145,6 +147,13 @@ case $key in
 	;;
 esac
 done
+
+if [ -z "$DISPLAY" ]
+then
+	TUI
+else
+	GUI
+fi
 
 
 

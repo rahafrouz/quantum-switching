@@ -56,3 +56,15 @@ msgstr "برای رابط گرافی حرف گ و برای رابط ترمینا
 msgid "You should enter an option. use -h for help"
 msgstr "بابا یه چیزی وارد کن. نمیدونی از گزینه اچ برای کمک استفاده کن."
 
+msgid "Channel 1"
+msgstr "کانال ۱"
+
+msgid "Channel 2"
+msgstr "کانال ۲"
+
+msgid "Switched to channel: 2"
+msgstr "به کانال ۲ تغییر پیدا کرد."
+
+msgid "Switched to channel: 1"
+msgstr "به کانال ۱ تغییر کرد."
+

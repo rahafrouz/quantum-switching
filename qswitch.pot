@@ -56,3 +56,15 @@ msgstr ""
 msgid "You should enter an option. use -h for help"
 msgstr ""
 
+msgid "Channel 1"
+msgstr ""
+
+msgid "Channel 2"
+msgstr ""
+
+msgid "Switched to channel: 2"
+msgstr ""
+
+msgid "Switched to channel: 1"
+msgstr ""
+
