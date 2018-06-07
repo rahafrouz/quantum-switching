@@ -3,7 +3,7 @@
 
 # Variable Description
 INCORRECT_INPUT_COUNTER=0
-GETTEXT="gettext -d calc_ui"
+GETTEXT="gettext -d qswitch"
 which gdialog 2> /dev/null && DIALOG=gdialog || DIALOG=dialog
 BUFFER=/tmp/qswitch1-$$
 OUTPUT_BUFFER=/tmp/qswitch2-$$
@@ -24,14 +24,13 @@ main_loop (){
 		exit 
 	else
 		INCORRECT_INPUT_COUNTER=$((INCORRECT_INPUT_COUNTER+1)) 
-		echo "\n Please Enter k or m. ($INCORRECT_INPUT_COUNTER/3)" 
+		echo "\n `$GETTEXT \"Please Enter k or m.\"` ($INCORRECT_INPUT_COUNTER/3)" 
 		if [ $INCORRECT_INPUT_COUNTER -ge 3 ]
 		then
 			exit 
 		fi
 	fi
 }
-
 setup_network(){
 if [ "$QS_NETWORK_EN" = true ]
 then
@@ -50,7 +49,7 @@ end(){
 	# done 
 TUI(){
 	setup_network
-	echo "You want to switch this SDN. Tell me the channel number (1 or 2)"
+	echo "`$GETTEXT \"You want to switch this SDN. Tell me the channel number (1 or 2) :\"`"
 	read QS_CHANNEL_NUMBER
 	echo $QS_CHANNEL_NUMBER | $CORE  
 }
@@ -74,19 +73,31 @@ GUI(){
 
 
 help(){
-	echo "this is help.\nOptions:"
-	echo "  -h|--help: showing help"
-	echo "  -n|--network: If this option is entered, the worker process would be over net and you must enter ip and port of the worker. otherwise it is local."
-	echo "  -P|--Port: port number of worker (xinetd)"
-	echo "  -H|--Host: host address of worker (xinetd)"
-	echo "  -p|--qport: This option indicate port number of the rest-forward app. Usually, It is 8080."
-	echo "  -I|--Input method: enter G for GUI, and T for TUI. IMPORTANT: THIS OPTION SHOULD BE THE LAST ONE SINCE THERE IS NO THREAD."
+	echo "`$GETTEXT \"This is the help :\"`"
+	echo "`$GETTEXT \"Here are the Options:\"`"
+	echo "    -h|--help:"
+	echo "        `$GETTEXT \"Showing the help\"`"
 
+	echo "    -n|--network"
+	echo "        `$GETTEXT \"If this option is entered, the worker process would be over net and you must enter ip and port of the worker. otherwise it is local.\"`"	
+	
+	echo "    -P|--Port: port number of worker (xinetd)"
+	echo "        `$GETTEXT \"port number of worker\"`"	
+	
+	echo "    -H|--Host: host address of worker (xinetd)"
+	echo "        `$GETTEXT \"host address of worker\"`"	
+	
+	echo "    -p|--qport: "
+	echo "        `$GETTEXT \"This option indicate port number of the rest-forward app. Usually, It is 8080.\"`"	
+	
+	echo "    -I|--Input method: "
+	echo "        `$GETTEXT \"enter G for GUI, and T for TUI. IMPORTANT: THIS OPTION SHOULD BE THE LAST ONE SINCE THERE IS NO THREAD.\"`"
 }
 
 if  [[ "$#" -lt 2 ]]
 then
-	echo "You should enter an option. use -h for help"
+	echo "`$GETTEXT \"You should enter an option. use -h for help\"`"	
+
 fi 
 
 while [[ "$#" -gt 0 ]]
